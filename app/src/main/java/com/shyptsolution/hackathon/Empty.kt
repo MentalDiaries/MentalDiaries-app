@@ -3,11 +3,14 @@ package com.shyptsolution.hackathon
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.create
+
 
 class Empty : AppCompatActivity() {
     lateinit var editor: SharedPreferences.Editor
@@ -27,5 +30,25 @@ class Empty : AppCompatActivity() {
             }
             finish()
         }, 1000)
+    }
+
+    fun check(){
+        val client = OkHttpClient().newBuilder()
+            .build()
+        val mediaType = "application/json".toMediaTypeOrNull()
+        val body: RequestBody = create(
+            mediaType,
+            "{\r\n    \"username\": \"username1\",\r\n    \"entry\": \"I am fucking depressed\",\r\n    \"entry_title\": \"sad hackathon round\"\r\n}"
+        )
+        val request: Request = Request.Builder()
+            .url("https://mental-diaries.herokuapp.com/api/diary/entry/")
+            .method("POST", body)
+            .addHeader(
+                "Authorization",
+                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1OTA4MTgwLCJpYXQiOjE2NDU5MDYzODAsImp0aSI6ImMxNGU2MDhhYjIxZjQxMmNhOTUzYzEzMjg1ZmIxYTQ4IiwidXNlcl9pZCI6N30.xlrUByLxs9h3hk_6wilUFDPu4GzFIgn-vHcnxOcDQxY"
+            )
+            .addHeader("Content-Type", "application/json")
+            .build()
+        val response: Response = client.newCall(request).execute()
     }
 }
