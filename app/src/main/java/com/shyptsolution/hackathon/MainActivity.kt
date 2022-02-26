@@ -10,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -25,6 +26,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         //SharedPreference
         val sharedPref=getSharedPreferences("diary", Context.MODE_PRIVATE)
         editor=sharedPref.edit()
+        refreshToken(sharedPref)
         setContentView(R.layout.activity_main)
 
         //Title and Diary Note
@@ -203,8 +210,43 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun refreshToken(){
+    private fun refreshToken(sharedPreferences: SharedPreferences){
+        val `object` = JSONObject()
+        val client = OkHttpClient().newBuilder()
+            .build()
+        val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
+        val body = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("refresh", sharedPreferences.getString("refreshToken","").toString())
+            .build()
+        val request: okhttp3.Request = okhttp3.Request.Builder()
+            .url("https://mental-diaries.herokuapp.com/api/users/login/refresh/")
+            .method("POST", body)
+            .build()
+        GlobalScope.launch {
+            val response = client.newCall(request).execute()
+            val message=response.message
+            if(message.toString()!="OK"){
+                withContext(Dispatchers.Main){
+                    Toast.makeText(this@MainActivity,"Some error Occurred.",Toast.LENGTH_LONG).show()
+                }
+            }
+            else{
+                val responseObj=response.body?.string()
+                val Jobject = JSONObject(responseObj)
+                val accessToken=Jobject.get("access")
+                editor.remove("accessToken").commit()
+                editor.apply {
+                    putString("accessToken",accessToken.toString())
+                    apply()
+                }
+//                withContext(Dispatchers.Main){
+//                    Toast.makeText(this@MainActivity,accessToken.toString(),Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this@MainActivity,sharedPreferences.getString("accessToken",""),Toast.LENGTH_LONG).show()
+//                }
+            }
 
+        }
     }
 
 
