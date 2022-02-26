@@ -1,39 +1,74 @@
 package com.shyptsolution.hackathon
 
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class Login : AppCompatActivity() {
+    lateinit var editor: SharedPreferences.Editor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
         val sharedPref=getSharedPreferences("diary", Context.MODE_PRIVATE)
-
+        editor=sharedPref.edit()
         val loginButt=findViewById<TextView>(R.id.login)
         loginButt.setOnClickListener {
             val userName=findViewById<EditText>(R.id.userName_input).text.toString()
             val password=findViewById<EditText>(R.id.password_input).text.toString()
             if(userName.isNotBlank() && password.isNotBlank()){
-//                val client = OkHttpClient().newBuilder()
-//                    .build()
-//                val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
-//                val body: RequestBody = FormBody.Builder.
-//                    .addFormDataPart("username", "raunit")
-//                    .addFormDataPart("password", "raunit")
-//                    .build()
-//                val request: Request = Request.Builder()
-//                    .url("main/api/users/register/")
-//                    .method("POST", body)
-//                    .build()
-//                val response: Response = client.newCall(request).execute()
+                val url="https://mental-diaries.herokuapp.com/api/users/login/"
+                    val `object` = JSONObject()
+                    val client = OkHttpClient().newBuilder()
+                        .build()
+                    val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
+                    val body = MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("username", "raunit")
+                        .addFormDataPart("password", "raunit")
+                        .build()
+                    val request: okhttp3.Request = okhttp3.Request.Builder()
+                        .url("https://mental-diaries.herokuapp.com/api/users/login/")
+                        .method("POST", body)
+                        .build()
+                    GlobalScope.launch {
+                        val response = client.newCall(request).execute()
+                        val message=response.message
+                        if(message.toString()!="OK"){
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(this@Login,"Some error Occurred",Toast.LENGTH_LONG).show()
+                            }
+                        }
+                        else{
+                            val responseObj=response.body?.string()
+                            val Jobject = JSONObject(responseObj)
+                          val accessToken=Jobject.get("access")
+                          val refreshToken=Jobject.get("refresh")
+                            editor.apply {
+                                putString("accessToken",accessToken.toString())
+                                putString("refreshToken",refreshToken.toString())
+                            }
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(this@Login,"Login Successful",Toast.LENGTH_LONG).show()
+                                startActivity(Intent(this@Login,MainActivity::class.java))
+                            }
+                        }
+
+                    }
             }
             else{
                 Toast.makeText(this,"Check Username or Password.",Toast.LENGTH_LONG).show()
@@ -69,6 +104,28 @@ class Login : AppCompatActivity() {
             var finalPassword=""
                 if (Password.text.toString()==confirmPass.text.toString()){
                     finalPassword=confirmPass.text.toString()
+                    val url="https://mental-diaries.herokuapp.com/api/users/register/"
+                    val `object` = JSONObject()
+                    val client = OkHttpClient().newBuilder()
+                        .build()
+                    val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
+                    val body = MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("username", "check")
+                        .addFormDataPart("password", "raunit")
+                        .build()
+                    val request: okhttp3.Request = okhttp3.Request.Builder()
+                        .url("https://mental-diaries.herokuapp.com/api/users/register/")
+                        .method("POST", body)
+                        .build()
+                    GlobalScope.launch {
+                        val response = client.newCall(request).execute()
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(this@Login,response.toString(),Toast.LENGTH_LONG).show()
+
+                        }
+                    }
+
                 }
                 else{
                     Toast.makeText(this@Login,"Please check your password. Password & Confirm Password doesn't match.",Toast.LENGTH_LONG).show()
