@@ -17,5 +17,8 @@ interface diaryDao {
     @Query("DELETE FROM diary_info WHERE id = :id")
     fun deleteDiary(id:String)
 
+    @Query("DELETE FROM diary_info")
+    fun deleteDatabase()
+
 
 }

@@ -65,6 +65,7 @@ class Login : AppCompatActivity() {
                             editor.apply {
                                 putString("accessToken",accessToken.toString())
                                 putString("refreshToken",refreshToken.toString())
+                                putString("username",userName)
                                 apply()
                             }
                             withContext(Dispatchers.Main){
@@ -113,44 +114,50 @@ class Login : AppCompatActivity() {
                     Toast.makeText(this,"Password is too weak.",Toast.LENGTH_LONG).show()
                 }
               else  if (Password.text.toString()==confirmPass.text.toString() && Username.text.isNotBlank() && Password.text.isNotBlank()){
-                    regpro.visibility=View.VISIBLE
-                    finalPassword=confirmPass.text.toString()
-                    val url="https://mental-diaries.herokuapp.com/api/users/register/"
-                    val `object` = JSONObject()
-                    val client = OkHttpClient().newBuilder()
-                        .build()
-                    val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
-                    val body = MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("username", Username.text.toString().trimStart().trimEnd())
-                        .addFormDataPart("password", finalPassword.trimStart().trimEnd())
-                        .build()
-                    val request: okhttp3.Request = okhttp3.Request.Builder()
-                        .url("https://mental-diaries.herokuapp.com/api/users/register/")
-                        .method("POST", body)
-                        .build()
-                    GlobalScope.launch {
-                        val response = client.newCall(request).execute()
-                        val responseObj=response.body?.string()
-                        val Jobject = JSONObject(responseObj)
-                        val status=Jobject.get("Status")
-                        withContext(Dispatchers.Main){
-                            regpro.visibility=View.GONE
-                            if(status=="Failure... User already registered"){
-                                Toast.makeText(this@Login,"Username already taken",Toast.LENGTH_LONG).show()
-                            }
-                            else if(status=="Success"){
-                                Toast.makeText(this@Login,"Successfully registered",Toast.LENGTH_LONG).show()
-                                builder.dismiss()
-                            }
-                            else{
-                                Toast.makeText(this@Login,"Some error occurred.",Toast.LENGTH_LONG).show()
+                  try{
+                      regpro.visibility=View.VISIBLE
+                      finalPassword=confirmPass.text.toString()
+                      val url="https://mental-diaries.herokuapp.com/api/users/register/"
+                      val `object` = JSONObject()
+                      val client = OkHttpClient().newBuilder()
+                          .build()
+                      val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
+                      val body = MultipartBody.Builder()
+                          .setType(MultipartBody.FORM)
+                          .addFormDataPart("username", Username.text.toString().trimStart().trimEnd())
+                          .addFormDataPart("password", finalPassword.trimStart().trimEnd())
+                          .build()
+                      val request: okhttp3.Request = okhttp3.Request.Builder()
+                          .url("https://mental-diaries.herokuapp.com/api/users/register/")
+                          .method("POST", body)
+                          .build()
+                      GlobalScope.launch {
+                          val response = client.newCall(request).execute()
+                          val responseObj=response.body?.string()
+                          val Jobject = JSONObject(responseObj)
+                          val status=Jobject.get("Status")
+                          withContext(Dispatchers.Main){
+                              regpro.visibility=View.GONE
+                              if(status=="Failure... User already registered"){
+                                  Toast.makeText(this@Login,"Username already taken",Toast.LENGTH_LONG).show()
+                              }
+                              else if(status=="Success"){
+                                  Toast.makeText(this@Login,"Successfully registered",Toast.LENGTH_LONG).show()
+                                  builder.dismiss()
+                              }
+                              else{
+                                  Toast.makeText(this@Login,"Some error occurred.",Toast.LENGTH_LONG).show()
 
-                            }
+                              }
 
 
-                        }
-                    }
+                          }
+                      }
+                  }
+                  catch (e:Exception){
+                      Toast.makeText(this,"Check username or password. Username shouldn't contain space.",Toast.LENGTH_LONG).show()
+                  }
+
 
                 }
                 else{

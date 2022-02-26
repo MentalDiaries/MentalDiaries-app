@@ -21,7 +21,6 @@ class Empty : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             if(accessToken.isNullOrEmpty()){
                 startActivity(Intent(this,Login::class.java))
-                Toast.makeText(this,accessToken.toString(),Toast.LENGTH_LONG).show()
             }
             else{
                 startActivity(Intent(this,MainActivity::class.java))

@@ -24,4 +24,7 @@ class DiaryViewModel(application: Application):AndroidViewModel(application) {
     fun deleteDiary(id:String) =viewModelScope.launch(Dispatchers.IO){
         repository.deleteDiary(id)
     }
+    fun deleteDatabase() = viewModelScope.launch (Dispatchers.IO){
+        repository.deleteAll()
+    }
 }

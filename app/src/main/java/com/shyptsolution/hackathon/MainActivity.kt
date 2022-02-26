@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -21,6 +22,7 @@ import com.google.android.material.navigation.NavigationView
 import com.shyptsolution.classproject.DataBase.DiaryEntity
 import com.shyptsolution.classproject.DataBase.DiaryViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -49,6 +51,8 @@ class MainActivity : AppCompatActivity() {
         //Menu Options
         val navigationView = findViewById<NavigationView>(R.id.navmenu)
         val navheader = navigationView.getHeaderView(0)
+        val username=navheader.findViewById<TextView>(R.id.userName)
+        username.setText("Welcome, "+sharedPref.getString("username",""))
         val driver:DrawerLayout=findViewById(R.id.drawerlayout)
 //        supportActionBar?.hide()
         toggle= ActionBarDrawerToggle(this,driver,R.string.open,R.string.close)
@@ -74,7 +78,11 @@ class MainActivity : AppCompatActivity() {
 
                }
                R.id.logout -> {
+                   editor.clear().apply()
                    startActivity(Intent(this,Login::class.java))
+                   GlobalScope.launch (Dispatchers.IO){
+                       viewModel.repository.deleteAll()
+                   }
                    driver.closeDrawer(GravityCompat.START)
                }
 
@@ -193,6 +201,10 @@ class MainActivity : AppCompatActivity() {
 
         })
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun refreshToken(){
+
     }
 
 
