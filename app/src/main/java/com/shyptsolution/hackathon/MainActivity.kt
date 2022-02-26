@@ -32,9 +32,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var title:EditText
     lateinit var diaryNote:EditText
     lateinit var editor:SharedPreferences.Editor
-    @SuppressLint("CommitPrefEdits")
+    @SuppressLint("CommitPrefEdits", "UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.gradient))
         //SharedPreference
         val sharedPref=getSharedPreferences("diary", Context.MODE_PRIVATE)
         editor=sharedPref.edit()

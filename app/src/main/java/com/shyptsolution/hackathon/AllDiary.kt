@@ -1,5 +1,6 @@
 package com.shyptsolution.hackathon
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -19,10 +20,12 @@ class AllDiary : AppCompatActivity(), RecyclerViewAllDiary.onItemClick {
     lateinit var adapter:RecyclerViewAllDiary
     lateinit var viewModel:DiaryViewModel
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_diary)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.gradient))
 
         val recycerView=findViewById<RecyclerView>(R.id.recyclerViewAllDiary)
         recycerView.setHasFixedSize(false )

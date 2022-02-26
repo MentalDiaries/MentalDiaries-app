@@ -3,7 +3,7 @@
         android:startColor="#c81f70  "
         android:centerColor="#E065B6"
         android:endColor="#c81f70  "
-        android:angle="315"/>
+        android:angle="180"/>
     <corners
         android:radius="0dp"/>
 
