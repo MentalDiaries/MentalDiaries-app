@@ -11,10 +11,12 @@
         android:theme="@style/Theme.Hackathon">
         <activity
             android:name=".AllDiary"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".Login"
+            android:screenOrientation="portrait"
             android:exported="true"></activity>
         <activity
             android:name=".Empty"
@@ -27,6 +29,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
     </application>
 

@@ -41,8 +41,8 @@ class Login : AppCompatActivity() {
                     val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
                     val body = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("username", userName)
-                        .addFormDataPart("password", password)
+                        .addFormDataPart("username", userName.trimEnd().trimStart())
+                        .addFormDataPart("password", password.trimEnd().trimStart())
                         .build()
                     val request: okhttp3.Request = okhttp3.Request.Builder()
                         .url("https://mental-diaries.herokuapp.com/api/users/login/")
@@ -65,6 +65,7 @@ class Login : AppCompatActivity() {
                             editor.apply {
                                 putString("accessToken",accessToken.toString())
                                 putString("refreshToken",refreshToken.toString())
+                                apply()
                             }
                             withContext(Dispatchers.Main){
                                 Toast.makeText(this@Login,"Login Successful",Toast.LENGTH_LONG).show()
@@ -107,8 +108,11 @@ class Login : AppCompatActivity() {
             val registerButt=popupview.findViewById<TextView>(R.id.register)
             val regpro=popupview.findViewById<ProgressBar>(R.id.registerProgress)
             registerButt.setOnClickListener {
-            var finalPassword=""
-                if (Password.text.toString()==confirmPass.text.toString() && Username.text.isNotBlank() && Password.text.isNotBlank()){
+            var finalPassword=confirmPass.text.toString()
+                if(finalPassword.length<6){
+                    Toast.makeText(this,"Password is too weak.",Toast.LENGTH_LONG).show()
+                }
+              else  if (Password.text.toString()==confirmPass.text.toString() && Username.text.isNotBlank() && Password.text.isNotBlank()){
                     regpro.visibility=View.VISIBLE
                     finalPassword=confirmPass.text.toString()
                     val url="https://mental-diaries.herokuapp.com/api/users/register/"
@@ -118,8 +122,8 @@ class Login : AppCompatActivity() {
                     val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
                     val body = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("username", Username.text.toString())
-                        .addFormDataPart("password", finalPassword)
+                        .addFormDataPart("username", Username.text.toString().trimStart().trimEnd())
+                        .addFormDataPart("password", finalPassword.trimStart().trimEnd())
                         .build()
                     val request: okhttp3.Request = okhttp3.Request.Builder()
                         .url("https://mental-diaries.herokuapp.com/api/users/register/")
