@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,8 @@ class Login : AppCompatActivity() {
             val userName=findViewById<EditText>(R.id.userName_input).text.toString()
             val password=findViewById<EditText>(R.id.password_input).text.toString()
             if(userName.isNotBlank() && password.isNotBlank()){
+                val loginProgress=findViewById<ProgressBar>(R.id.loginProgress)
+                loginProgress.visibility= View.VISIBLE
                 val url="https://mental-diaries.herokuapp.com/api/users/login/"
                     val `object` = JSONObject()
                     val client = OkHttpClient().newBuilder()
@@ -38,8 +41,8 @@ class Login : AppCompatActivity() {
                     val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
                     val body = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("username", "raunit")
-                        .addFormDataPart("password", "raunit")
+                        .addFormDataPart("username", userName)
+                        .addFormDataPart("password", password)
                         .build()
                     val request: okhttp3.Request = okhttp3.Request.Builder()
                         .url("https://mental-diaries.herokuapp.com/api/users/login/")
@@ -50,7 +53,8 @@ class Login : AppCompatActivity() {
                         val message=response.message
                         if(message.toString()!="OK"){
                             withContext(Dispatchers.Main){
-                                Toast.makeText(this@Login,"Some error Occurred",Toast.LENGTH_LONG).show()
+                                loginProgress.visibility=View.GONE
+                                Toast.makeText(this@Login,"Some error Occurred. Please check Username or Password.",Toast.LENGTH_LONG).show()
                             }
                         }
                         else{
@@ -64,6 +68,7 @@ class Login : AppCompatActivity() {
                             }
                             withContext(Dispatchers.Main){
                                 Toast.makeText(this@Login,"Login Successful",Toast.LENGTH_LONG).show()
+                                loginProgress.visibility=View.GONE
                                 startActivity(Intent(this@Login,MainActivity::class.java))
                             }
                         }
@@ -100,9 +105,11 @@ class Login : AppCompatActivity() {
             val Password=popupview.findViewById<EditText>(R.id.registerPass)
             val confirmPass=popupview.findViewById<EditText>(R.id.registerPassConfirm)
             val registerButt=popupview.findViewById<TextView>(R.id.register)
+            val regpro=popupview.findViewById<ProgressBar>(R.id.registerProgress)
             registerButt.setOnClickListener {
             var finalPassword=""
-                if (Password.text.toString()==confirmPass.text.toString()){
+                if (Password.text.toString()==confirmPass.text.toString() && Username.text.isNotBlank() && Password.text.isNotBlank()){
+                    regpro.visibility=View.VISIBLE
                     finalPassword=confirmPass.text.toString()
                     val url="https://mental-diaries.herokuapp.com/api/users/register/"
                     val `object` = JSONObject()
@@ -111,8 +118,8 @@ class Login : AppCompatActivity() {
                     val mediaType: MediaType = "text/plain".toMediaTypeOrNull()!!
                     val body = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("username", "check")
-                        .addFormDataPart("password", "raunit")
+                        .addFormDataPart("username", Username.text.toString())
+                        .addFormDataPart("password", finalPassword)
                         .build()
                     val request: okhttp3.Request = okhttp3.Request.Builder()
                         .url("https://mental-diaries.herokuapp.com/api/users/register/")
@@ -120,19 +127,32 @@ class Login : AppCompatActivity() {
                         .build()
                     GlobalScope.launch {
                         val response = client.newCall(request).execute()
+                        val responseObj=response.body?.string()
+                        val Jobject = JSONObject(responseObj)
+                        val status=Jobject.get("Status")
                         withContext(Dispatchers.Main){
-                            Toast.makeText(this@Login,response.toString(),Toast.LENGTH_LONG).show()
+                            regpro.visibility=View.GONE
+                            if(status=="Failure... User already registered"){
+                                Toast.makeText(this@Login,"Username already taken",Toast.LENGTH_LONG).show()
+                            }
+                            else if(status=="Success"){
+                                Toast.makeText(this@Login,"Successfully registered",Toast.LENGTH_LONG).show()
+                                builder.dismiss()
+                            }
+                            else{
+                                Toast.makeText(this@Login,"Some error occurred.",Toast.LENGTH_LONG).show()
+
+                            }
+
 
                         }
                     }
 
                 }
                 else{
-                    Toast.makeText(this@Login,"Please check your password. Password & Confirm Password doesn't match.",Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@Login,"Some error Occurred. Password & Confirm Password doesn't match or any other error occurred.",Toast.LENGTH_LONG).show()
                 }
-                if(Username.text.toString().isNotBlank()&& finalPassword.isNotBlank()){
 
-                }
             }
 
             }
