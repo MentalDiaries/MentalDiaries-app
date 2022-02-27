@@ -246,27 +246,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun insertToServer(sharedPreferences: SharedPreferences, entry: String, title: String) {
+    private fun insertToServer(sharedPreferences: SharedPreferences,  entry: String, title: String) {
         val acccessToken = sharedPreferences.getString("accessToken", "").toString()
-
+        val user=sharedPreferences.getString("username", "").toString()
+            Toast.makeText(this,user,Toast.LENGTH_LONG).show()
         val client = OkHttpClient().newBuilder()
             .build()
-        val mediaType = "application/json".toMediaTypeOrNull()
-        val body: RequestBody = RequestBody.create(
-            mediaType,
-            "{\r\n    \"username\": \"raunit\", \"\").toString()\",\r\n    \"entry\": \"$entry\",\r\n    \"entry_title\": \"$title\"\r\n}"
-        )
+        val mediaType = "text/plain".toMediaTypeOrNull()
+        val body: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("username", user)
+            .addFormDataPart("entry", entry)
+            .addFormDataPart("entry_title", title)
+            .build()
         val request: Request = Request.Builder()
             .url("https://mental-diaries.herokuapp.com/api/diary/entry/")
             .method("POST", body)
             .addHeader(
                 "Authorization",
-                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1OTE4ODU2LCJpYXQiOjE2NDU5MTcwNTYsImp0aSI6Ijc2ZTZjNDk4YjY0MDRjNjQ5ODk3ZmY5ZjllOTY1NzQ5IiwidXNlcl9pZCI6NH0.Ix9fFseTq-Dd_aMdG93TYT8o1C9uc1LJdURtuiUR-nQ"
+                "Bearer $acccessToken"
             )
-            .addHeader("Content-Type", "application/json")
             .build()
         GlobalScope.launch {
-           val str= APi().send(this@MainActivity,"","","raunit")
+//           val str= APi().send(this@MainActivity,entry,title,sharedPreferences.getString("username", "").toString(),acccessToken)
 
             val response = client.newCall(request).execute().message
 //            val responseObj = response.body?.string()
@@ -285,7 +287,7 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         this@MainActivity,
-                        "Successfully Saved."+str.toString()+response.toString(),
+                        "Successfully Saved."+response.toString(),
                         Toast.LENGTH_LONG
                     ).show()
 

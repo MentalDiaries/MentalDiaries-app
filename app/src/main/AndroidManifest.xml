@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shyptsolution.hackathon">
-<uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,14 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hackathon">
         <activity
-            android:name=".AllDiary"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity"
+            android:name=".GMap"
             android:exported="false" />
         <activity
+            android:name=".Analysis"
+            android:exported="false" />
+        <activity
+            android:name=".AllDiary"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Login"
-            android:screenOrientation="portrait"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Empty"
             android:exported="true">
@@ -29,8 +37,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

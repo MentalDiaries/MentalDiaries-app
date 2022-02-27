@@ -80,5 +80,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
     implementation("com.android.volley:volley:1.2.1")
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+
+//    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }

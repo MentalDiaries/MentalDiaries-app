@@ -17,19 +17,20 @@ import okhttp3.Response;
 
 public class APi {
 
-    public String send(Context context,String entry,String title,String username) throws IOException {
+    public String send(Context context,String entry,String title,String username,String access) throws IOException {
         try{
             String user=username;
             String titl=title;
             String ent=entry;
+            String acc=access;
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
             MediaType mediaType = MediaType.parse("application/json");
-            RequestBody body = RequestBody.create(mediaType, "{\r\n    \"raunit\": \"\",\r\n    \"entry\": \"I am depressed\",\r\n    \"entry_title\": \"sad hackathon round\"\r\n}");
+            RequestBody body = RequestBody.create(mediaType, "{\r\n    \"username\": \"+user\",\r\n    \"entry\": \"+titl\",\r\n    \"entry_title\": \"+ent\"\r\n}");
             Request request = new Request.Builder()
                     .url("https://mental-diaries.herokuapp.com/api/diary/entry/")
                     .method("POST", body)
-                    .addHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1OTE4ODU2LCJpYXQiOjE2NDU5MTcwNTYsImp0aSI6Ijc2ZTZjNDk4YjY0MDRjNjQ5ODk3ZmY5ZjllOTY1NzQ5IiwidXNlcl9pZCI6NH0.Ix9fFseTq-Dd_aMdG93TYT8o1C9uc1LJdURtuiUR-nQ")
+                    .addHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1OTQ5MDg1LCJpYXQiOjE2NDU5NDcyODUsImp0aSI6IjU5OTZjZTljZjAyNTQwODBiY2UwNDQ5ZTY4ZGQyNjY0IiwidXNlcl9pZCI6NH0.55JduK4w8RKzN_0Z_0qUhq_hRIkSQIwVdaVTxVVJd0w")
                     .addHeader("Content-Type", "application/json")
                     .build();
             Response response = client.newCall(request).execute();
