@@ -30,5 +30,5 @@
         android:layout_margin="2dp"
         android:fontFamily="@font/loght"
         android:padding="3dp"
-        android:text="Status" />
+        android:text="Stay always happy." />
 </androidx.appcompat.widget.LinearLayoutCompat>

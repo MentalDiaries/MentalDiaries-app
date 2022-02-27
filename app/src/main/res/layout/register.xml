@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/loght"
         android:gravity="center"
-        android:text="Password once forgotter cannot be recovered due to security issue."
+        android:text="Password once forgotten cannot be recovered due to security issue."
         app:layout_constraintTop_toBottomOf="@+id/register" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

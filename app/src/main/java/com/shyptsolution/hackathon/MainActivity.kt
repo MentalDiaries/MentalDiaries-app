@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -76,7 +77,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.appointment -> {
-
+                    val url = "https://www.google.com/maps/search/therapist+near+me/"
+                    val i = Intent(Intent.ACTION_VIEW)
+                    i.data = Uri.parse(url)
+                    startActivity(i)
+                    driver.closeDrawer(GravityCompat.START)
                 }
 
                 R.id.totalDiary -> {
