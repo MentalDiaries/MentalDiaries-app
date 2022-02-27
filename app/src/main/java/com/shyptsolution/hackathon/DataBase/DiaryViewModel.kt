@@ -27,4 +27,8 @@ class DiaryViewModel(application: Application):AndroidViewModel(application) {
     fun deleteDatabase() = viewModelScope.launch (Dispatchers.IO){
         repository.deleteAll()
     }
+
+    fun updateBookmark(bookmark:Boolean,id:String)=viewModelScope.launch(Dispatchers.IO){
+        repository.updateBookmark(bookmark,id)
+    }
 }

@@ -67,7 +67,7 @@ class AllDiary : AppCompatActivity(), RecyclerViewAllDiary.onItemClick {
         builder.setIcon(android.R.drawable.ic_dialog_alert)
         builder.setPositiveButton("Delete This Post") { dialogInterface, which ->
             GlobalScope.launch {
-                viewModel.repository.deleteDiary(diary.id)
+                viewModel.repository.updateBookmark(true,diary.id)
             }
         }
         builder.setNegativeButton("Cancel") { dialogInterface, which ->
@@ -96,7 +96,7 @@ class AllDiary : AppCompatActivity(), RecyclerViewAllDiary.onItemClick {
             .build()
 
 
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val response = client.newCall(request).execute()
             val obj=response.body?.string()
 //            val jsonObject=JSONObject(obj)
@@ -109,7 +109,7 @@ class AllDiary : AppCompatActivity(), RecyclerViewAllDiary.onItemClick {
                 val entry = jsonObject.optString("entry").toString()
                 val date = jsonObject.optString("entry_date_time").toString()
 
-                var diary=DiaryEntity(id,title,date,entry,"")
+                var diary=DiaryEntity(id,title,date,entry,"",false)
                viewModel.insertDiary(diary)
             }
 

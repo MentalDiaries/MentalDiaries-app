@@ -129,8 +129,8 @@ class MainActivity : AppCompatActivity() {
                     val df = SimpleDateFormat("dd-MM-yyyy, hh:mm aa")
                     var localDate = df.format(Date())
                     val id = Calendar.getInstance().timeInMillis.toString()
-                    val Diary = DiaryEntity(id, titleText, localDate, todayDiary, "Status")
-                    viewModel.repository.insert(Diary)
+//                    val Diary = DiaryEntity(id, titleText, localDate, todayDiary, "Status")
+//                    viewModel.repository.insert(Diary)
                     insertToServer(sharedPref,todayDiary,titleText)
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@MainActivity, "Saved", Toast.LENGTH_LONG).show()
@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity() {
     private fun insertToServer(sharedPreferences: SharedPreferences,  entry: String, title: String) {
         val acccessToken = sharedPreferences.getString("accessToken", "").toString()
         val user=sharedPreferences.getString("username", "").toString()
-            Toast.makeText(this,user,Toast.LENGTH_LONG).show()
+//            Toast.makeText(this,user,Toast.LENGTH_LONG).show()
         val client = OkHttpClient().newBuilder()
             .build()
         val mediaType = "text/plain".toMediaTypeOrNull()
@@ -284,14 +284,7 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            } else {
 //
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Successfully Saved."+response.toString(),
-                        Toast.LENGTH_LONG
-                    ).show()
 
-                }
 //            }
         }
     }

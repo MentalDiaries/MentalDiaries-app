@@ -21,5 +21,7 @@ class DiaryRepository(private val diaryDao: diaryDao) {
         diaryDao.deleteDatabase()
     }
 
-
+    suspend fun updateBookmark(bookmark:Boolean,id:String){
+        diaryDao.updateBookmark(bookmark,id)
+    }
 }

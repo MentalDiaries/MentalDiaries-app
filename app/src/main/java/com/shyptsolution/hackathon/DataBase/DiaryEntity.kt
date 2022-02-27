@@ -12,7 +12,8 @@ data class DiaryEntity(
     val title:String,
     val date:String,
     val diary:String,
-    val status:String
+    val status:String,
+    var delete:Boolean
 )
 
 
