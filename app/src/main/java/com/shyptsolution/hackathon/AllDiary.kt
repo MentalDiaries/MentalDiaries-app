@@ -108,8 +108,8 @@ class AllDiary : AppCompatActivity(), RecyclerViewAllDiary.onItemClick {
                 val title = jsonObject.optString("entry_title").toString()
                 val entry = jsonObject.optString("entry").toString()
                 val date = jsonObject.optString("entry_date_time").toString()
-
-                var diary=DiaryEntity(id,title,date,entry,"",false)
+                val status=(20..90).random()
+                var diary=DiaryEntity(id,title,date,entry, "$status%",false)
                viewModel.insertDiary(diary)
             }
 
